@@ -158,6 +158,7 @@ public class StuUI extends JFrame {
 		connection = dbManager.getConnection();
 		try {
 			stmt = connection.createStatement();
+			
 			resultSet = stmt.executeQuery(sql);
 
 			while (resultSet.next()) {

@@ -37,6 +37,7 @@ public class DBManager {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
+                
             }
         }
     }

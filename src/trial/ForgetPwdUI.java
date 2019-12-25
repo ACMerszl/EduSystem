@@ -205,6 +205,7 @@ public class ForgetPwdUI extends JFrame {
 					if ((flagOne && flagTwo) == true)
 						setVisible(false);
 					//System.out.println("***");
+					
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
