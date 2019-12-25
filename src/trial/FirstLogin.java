@@ -139,7 +139,6 @@ public class FirstLogin extends JFrame {
 								//System.out.println("***");
 							} catch (Exception ex) {
 								ex.printStackTrace();
-								
 							}
 						}
 					}
