@@ -144,9 +144,10 @@ public class ForgetPwdUI extends JFrame {
 							panel.setVisible(true);
 						}
 						
-						dbManager.releaseConnection();
 					} catch (Exception ex) {
 						ex.printStackTrace();
+					} finally {
+						dbManager.releaseConnection();
 					}
 				}
 			}
@@ -174,8 +175,12 @@ public class ForgetPwdUI extends JFrame {
 					flagOne = true;
 					if (pwd.equals(rePwd) == false) 
 						JOptionPane.showMessageDialog(null, "两次输入不一致！", "消息",JOptionPane.ERROR_MESSAGE); 
-					else 
-						flagTwo = true;
+					else {
+						if (pwd.equals("123456") == true) 
+							JOptionPane.showMessageDialog(null, "不能使用初始密码123456", "消息",JOptionPane.ERROR_MESSAGE);
+						else
+							flagTwo = true;
+					}
 				}
 				
 				String sql = "SELECT * FROM InfoStu";
@@ -201,12 +206,14 @@ public class ForgetPwdUI extends JFrame {
 					}
 					
 					
-					dbManager.releaseConnection();
+					
 					if ((flagOne && flagTwo) == true)
 						setVisible(false);
 					//System.out.println("***");
 				} catch (Exception ex) {
 					ex.printStackTrace();
+				} finally {
+					dbManager.releaseConnection();
 				}
 				
 			}

@@ -179,9 +179,10 @@ public class MainUI extends JFrame {
 			
 			if (pwd.equals(Pwd) == true) 
 				flag = true;
-			dbManager.releaseConnection();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			dbManager.releaseConnection();
 		}
 		return flag;
 	}
