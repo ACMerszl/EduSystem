@@ -103,11 +103,14 @@ public class FirstLogin extends JFrame {
 					if (Pwd.length() == 0) 
 						JOptionPane.showMessageDialog(null, "密码不能为空", "消息",JOptionPane.ERROR_MESSAGE);
 					else {
-					
+						
 						if (check(Pwd, rePwd) == false) {
 							JOptionPane.showMessageDialog(null, "两次输入不一致", "消息",JOptionPane.ERROR_MESSAGE);
 						} else {
-							flagOne = true;
+							if (Pwd.equals("123456") == true) 
+								JOptionPane.showMessageDialog(null, "不能使用初始密码123456", "消息",JOptionPane.ERROR_MESSAGE);
+							else 
+								flagOne = true;
 							String sql = "SELECT * FROM InfoStu";
 							dbManager = new DBManager();
 							connection = dbManager.getConnection();
@@ -132,13 +135,13 @@ public class FirstLogin extends JFrame {
 									}
 								}
 								
-								
-								dbManager.releaseConnection();
 								if (flagOne)
 									setVisible(false);
 								//System.out.println("***");
 							} catch (Exception ex) {
 								ex.printStackTrace();
+							} finally {
+								dbManager.releaseConnection();
 							}
 						}
 					}

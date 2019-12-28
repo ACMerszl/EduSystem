@@ -3,29 +3,35 @@ package trial;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+
+import java.awt.BorderLayout;
 import java.awt.Font;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import java.util.Date;
+import java.util.Vector;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
 public class StuUI extends JFrame {
 	private static String Sdeparment, Sno, Sclass, Sname, Saverage, Sdate;
 	private static DBManager dbManager;
 	private static Connection connection;
 	private static Statement stmt;
 	private static ResultSet resultSet;
-	
-	
+	private DefaultTableModel model;//表格模型
+    private JTable table;//表格
 	
 	public StuUI(String ID) {
 		getInfo(ID);
@@ -55,85 +61,14 @@ public class StuUI extends JFrame {
 		rdbtnNewRadioButton.setBounds(359, 49, 127, 23);
 		getContentPane().add(rdbtnNewRadioButton);
 		
-		JButton button = new JButton("\u68C0\u7D22");
-		button.setFont(new Font("宋体", Font.PLAIN, 14));
-		button.setBounds(660, 49, 97, 23);
-		getContentPane().add(button);
 		
 		JLabel lblNewLabel = new JLabel("\u534E\u5317\u6C34\u5229\u6C34\u7535\u5927\u5B66\u6210\u7EE9\u660E\u7EC6(\u6709\u6548)");
 		lblNewLabel.setFont(new Font("宋体", Font.PLAIN, 20));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(326, 82, 355, 28);
+		lblNewLabel.setBounds(333, 97, 355, 28);
 		getContentPane().add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("\u9662(\u7CFB)/\u90E8\uFF1A");
-		lblNewLabel_1.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_1.setBounds(53, 133, 99, 15);
-		getContentPane().add(lblNewLabel_1);
-		
-		JLabel lblNewLabel_2 = new JLabel("\u5B66     \u53F7\uFF1A");
-		lblNewLabel_2.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_2.setBounds(53, 158, 99, 15);
-		getContentPane().add(lblNewLabel_2);
-		
-		JLabel lblNewLabel_3 = new JLabel("\u884C\u653F\u73ED\u7EA7\uFF1A");
-		lblNewLabel_3.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_3.setBounds(414, 133, 72, 15);
-		getContentPane().add(lblNewLabel_3);
-		
-		JLabel lblNewLabel_4 = new JLabel("\u59D3    \u540D\uFF1A");
-		lblNewLabel_4.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_4.setBounds(414, 158, 100, 15);
-		getContentPane().add(lblNewLabel_4);
-		
-		JLabel lblNewLabel_5 = new JLabel("\u5E73\u5747\u5B66\u5206\u7EE9\u70B9\uFF1A");
-		lblNewLabel_5.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_5.setBounds(724, 133, 110, 15);
-		/*
-		 * 平均学分绩点先鸽了。。。
-		 */
-		getContentPane().add(lblNewLabel_5);
-		
-		JLabel lblNewLabel_6 = new JLabel("\u6253\u5370\u65F6\u95F4\uFF1A");
-		lblNewLabel_6.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_6.setBounds(724, 158, 72, 15);
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
-		String date = (String)df.format(new Date());// new Date()为获取当前系统时间
-		getContentPane().add(lblNewLabel_6);
-		
-		table = new JTable();
-		table.setBounds(32, 201, 919, 332);
-		getContentPane().add(table);
-		
-		JLabel lblNewLabel_7 = new JLabel(Sdeparment);
-		lblNewLabel_7.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_7.setBounds(132, 133, 128, 15);
-		getContentPane().add(lblNewLabel_7);
-		
-		JLabel lblNewLabel_8 = new JLabel(Sno);
-		lblNewLabel_8.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_8.setBounds(132, 158, 128, 15);
-		getContentPane().add(lblNewLabel_8);
-		
-		JLabel lblNewLabel_9 = new JLabel(Sclass);
-		lblNewLabel_9.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_9.setBounds(487, 133, 97, 15);
-		getContentPane().add(lblNewLabel_9);
-		
-		JLabel lblNewLabel_10 = new JLabel(Sname);
-		lblNewLabel_10.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_10.setBounds(487, 158, 97, 15);
-		getContentPane().add(lblNewLabel_10);
-		
-		JLabel lblNewLabel_11 = new JLabel("***");
-		lblNewLabel_11.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_11.setBounds(825, 133, 81, 15);
-		getContentPane().add(lblNewLabel_11);
-		
-		JLabel lblNewLabel_12 = new JLabel(date);
-		lblNewLabel_12.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel_12.setBounds(794, 158, 107, 15);
-		getContentPane().add(lblNewLabel_12);
+		String date = (String)df.format(new Date());
 		
 		JButton btnNewButton = new JButton("\u6CE8\u9500");
 		btnNewButton.addActionListener(new ActionListener() {
@@ -146,11 +81,157 @@ public class StuUI extends JFrame {
 		btnNewButton.setBounds(767, 49, 97, 23);
 		getContentPane().add(btnNewButton);
 		
-		
+		JPanel panel = new JPanel();
+		panel.setBounds(25, 135, 907, 53);
+		getContentPane().add(panel);
+		panel.setLayout(null);
 		setVisible(true);
+		
+		JButton button = new JButton("\u68C0\u7D22");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Vector columnNames, rowData;
+				columnNames = new Vector();
+				columnNames.add("序号");
+				columnNames.add("课程号");
+				columnNames.add("课程名");
+				columnNames.add("学分");
+				columnNames.add("绩点");
+				columnNames.add("学分绩点");
+				String op = (String)comboBox.getSelectedItem();
+				rowData = new Vector();
+				
+				String sql = "select Score.CidNum, Score.Cname, Cscore, Sscore " + 
+						"from Student, Course, Score " + 
+						"where Student.Sno = Score.Sno and Course.CidNum = Score.CidNum and Score.Sno = '" +
+						ID + "' and Cteachtime = '" + op +"'";
+				//System.out.println(sql);
+				dbManager = new DBManager();
+				connection = dbManager.getConnection();
+				try {
+					stmt = connection.createStatement();
+					resultSet = stmt.executeQuery(sql);
+					double studyScore = 0, multySum = 0, multy = 0;
+					
+					int index = 1;
+					while (resultSet.next()) {
+						Vector tmp = new Vector();
+						double tmp1 = resultSet.getDouble(3), tmp2 = resultSet.getDouble(4);
+						tmp.add(String.valueOf(index));
+						tmp.add(resultSet.getString(1));
+						tmp.add(resultSet.getString(2));
+						tmp.add(resultSet.getString(3));
+						tmp.add(resultSet.getString(4));
+						multy = tmp1 * tmp2;
+						
+						String format = new DecimalFormat("#.00").format(multy);
+//						System.out.println(format);
+						tmp.add(format);
+						
+						studyScore += tmp1;
+						multySum += multy;
+						index++;
+						rowData.add(tmp);
+//						System.out.println(studyScore + "**" + multy);
+					}
+					
+//					System.out.println(multySum);
+					double ans = multySum / studyScore;		
+					
+					String format = new DecimalFormat("#.00").format(ans);
+//					System.out.println(format);
+					Saverage = format;
+//					System.out.println(Saverage);
+					
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				} finally {
+					dbManager.releaseConnection();
+				}
+				JLabel lblNewLabel_1 = new JLabel("\u9662(\u7CFB)/\u90E8\uFF1A");
+				lblNewLabel_1.setBounds(30, 10, 99, 15);
+				panel.add(lblNewLabel_1);
+				lblNewLabel_1.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_2 = new JLabel("\u5B66     \u53F7\uFF1A");
+				lblNewLabel_2.setBounds(30, 35, 99, 15);
+				panel.add(lblNewLabel_2);
+				lblNewLabel_2.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_3 = new JLabel("\u884C\u653F\u73ED\u7EA7\uFF1A");
+				lblNewLabel_3.setBounds(373, 10, 72, 15);
+				panel.add(lblNewLabel_3);
+				lblNewLabel_3.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_4 = new JLabel("\u59D3    \u540D\uFF1A");
+				lblNewLabel_4.setBounds(373, 35, 100, 15);
+				panel.add(lblNewLabel_4);
+				lblNewLabel_4.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_5 = new JLabel("\u5E73\u5747\u5B66\u5206\u7EE9\u70B9\uFF1A");
+				lblNewLabel_5.setBounds(695, 10, 110, 15);
+				panel.add(lblNewLabel_5);
+				lblNewLabel_5.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_6 = new JLabel("\u6253\u5370\u65F6\u95F4\uFF1A");
+				lblNewLabel_6.setBounds(695, 28, 72, 29);
+				panel.add(lblNewLabel_6);
+				lblNewLabel_6.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_12 = new JLabel(date);
+				lblNewLabel_12.setBounds(762, 35, 107, 15);
+				panel.add(lblNewLabel_12);
+				lblNewLabel_12.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_10 = new JLabel(Sname);
+				lblNewLabel_10.setBounds(444, 35, 97, 15);
+				panel.add(lblNewLabel_10);
+				lblNewLabel_10.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_9 = new JLabel(Sclass);
+				lblNewLabel_9.setBounds(444, 10, 97, 15);
+				panel.add(lblNewLabel_9);
+				lblNewLabel_9.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_8 = new JLabel(Sno);
+				lblNewLabel_8.setBounds(103, 35, 128, 15);
+				panel.add(lblNewLabel_8);
+				lblNewLabel_8.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_7 = new JLabel(Sdeparment);
+				lblNewLabel_7.setBounds(103, 10, 128, 15);
+				panel.add(lblNewLabel_7);
+				lblNewLabel_7.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				JLabel lblNewLabel_11 = new JLabel(Saverage);
+				lblNewLabel_11.setBounds(788, 10, 81, 15);
+				panel.add(lblNewLabel_11);
+				lblNewLabel_11.setFont(new Font("宋体", Font.PLAIN, 14));
+				
+				panel.setVisible(true);
+			        model = new DefaultTableModel(rowData, columnNames);//设置模型
+			        table = new JTable(model);//引用模型，或table.setModel(model);
+
+//			        getContentPane().add(sc, BorderLayout.CENTER);
+			        //table.setRowHeight(30);
+				JScrollPane scrollPane = new JScrollPane(table);
+				scrollPane.setBounds(47, 196, 891, 344);
+				getContentPane().add(scrollPane, BorderLayout.CENTER);
+			}
+		});
+		
+		
+		
+		
+		
+		panel.setVisible(false);
+		
+		button.setFont(new Font("宋体", Font.PLAIN, 14));
+		button.setBounds(660, 49, 97, 23);
+		getContentPane().add(button);
 	}
+	
 	private JPanel contentPane;
-	private JTable table;
 	
 	static public void getInfo(String ID) {
 		String sql = "SELECT * FROM Student";
@@ -169,14 +250,15 @@ public class StuUI extends JFrame {
 				}
 			} 
 			
-			dbManager.releaseConnection();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			dbManager.releaseConnection();
 		}
 		
 	}
 	
-//	public static void main(String args[]) {
-//		new StuUI("201720207");
-//	}
+	public static void main(String args[]) {
+		new StuUI("201720207");
+	}
 }
