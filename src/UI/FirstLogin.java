@@ -1,4 +1,4 @@
-package trial;
+package UI;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -6,29 +6,28 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
-import java.sql.Connection;
+import java.awt.Frame;
+
 import java.sql.ResultSet;
-import java.sql.Statement;
+
 
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
-public class FirstLogin extends JFrame {
+import DBManager.SqlTool;
+public class FirstLogin extends JDialog implements ActionListener {
 	
 	private static String Pwd, rePwd, textPro, answer;
-	
-	private static DBManager dbManager;
-	private static Connection connection;
-	private static Statement stmt;
 	private static ResultSet resultSet;
 	
-	public FirstLogin(String ID) {
+	public FirstLogin(Frame owner, String title, boolean modal, String ID) {
+		super(owner, title, modal);
 		JPanel contentPane;
 		JPasswordField passwordField;
 		JPasswordField passwordField_1;
@@ -111,38 +110,19 @@ public class FirstLogin extends JFrame {
 								JOptionPane.showMessageDialog(null, "不能使用初始密码123456", "消息",JOptionPane.ERROR_MESSAGE);
 							else 
 								flagOne = true;
-							String sql = "SELECT * FROM InfoStu";
-							dbManager = new DBManager();
-							connection = dbManager.getConnection();
-							
-							try {
-								stmt = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-								
-								resultSet = stmt.executeQuery(sql);
-								
-								while (resultSet.next()) {
-		
-									//System.out.println(resultSet.getString(1) + resultSet.getString(2) + resultSet.getString(3) + resultSet.getString(4));
-								
-									if (resultSet.getString(1).equals(ID) == true) {
-										
-										//System.out.println("!!!!!");
-										resultSet.updateString(1, ID);
-										resultSet.updateString(2, Pwd);
-										resultSet.updateString(3, textPro);
-										resultSet.updateString(4, answer);
-										resultSet.updateRow();
-									}
-								}
-								
-								if (flagOne)
+							if(flagOne) {
+								String sql = "update Student set Pwd = ?, ProText = ?, answer = ? where Sno = ?"; 
+								String paras[] = {Pwd, textPro, answer, ID};
+								SqlTool sqlTool = new SqlTool();
+								boolean flag = sqlTool.cudExecute(sql, paras);
+								if (flag == false) 
+									JOptionPane.showMessageDialog(null, "修改失败", "消息",JOptionPane.ERROR_MESSAGE);
+								else {
 									setVisible(false);
-								//System.out.println("***");
-							} catch (Exception ex) {
-								ex.printStackTrace();
-							} finally {
-								dbManager.releaseConnection();
+									sqlTool.close();
+								}
 							}
+							
 						}
 					}
 				}
@@ -163,6 +143,13 @@ public class FirstLogin extends JFrame {
 			return true;
 		else
 			return false;
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 //	public static void main(String args[]) {

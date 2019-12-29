@@ -1,6 +1,7 @@
-package trial;
+package UI;
 
 import javax.swing.JFrame;
+import DBManager.SqlTool;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
@@ -26,7 +27,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 public class StuUI extends JFrame {
 	private static String Sdeparment, Sno, Sclass, Sname, Saverage, Sdate;
-	private static DBManager dbManager;
+	private static SqlTool dbManager;
 	private static Connection connection;
 	private static Statement stmt;
 	private static ResultSet resultSet;
@@ -34,6 +35,7 @@ public class StuUI extends JFrame {
     private JTable table;//表格
 	
 	public StuUI(String ID) {
+		setTitle("By-szl");
 		getInfo(ID);
 		setSize(1000, 600);
 		setLocation(300,100); // 屏幕位置
@@ -100,17 +102,16 @@ public class StuUI extends JFrame {
 				columnNames.add("学分绩点");
 				String op = (String)comboBox.getSelectedItem();
 				rowData = new Vector();
-				
+					
 				String sql = "select Score.CidNum, Score.Cname, Cscore, Sscore " + 
 						"from Student, Course, Score " + 
-						"where Student.Sno = Score.Sno and Course.CidNum = Score.CidNum and Score.Sno = '" +
-						ID + "' and Cteachtime = '" + op +"'";
-				//System.out.println(sql);
-				dbManager = new DBManager();
-				connection = dbManager.getConnection();
+						"where Student.Sno = Score.Sno and Course.CidNum = Score.CidNum and Score.Sno = ? " +
+						" and Cteachtime = ?";
+				String []paras = {ID, op};
+				SqlTool sqlTool = new SqlTool();
+				resultSet = sqlTool.queryExecute(sql, paras);
+				
 				try {
-					stmt = connection.createStatement();
-					resultSet = stmt.executeQuery(sql);
 					double studyScore = 0, multySum = 0, multy = 0;
 					
 					int index = 1;
@@ -146,7 +147,7 @@ public class StuUI extends JFrame {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				} finally {
-					dbManager.releaseConnection();
+					sqlTool.close();
 				}
 				JLabel lblNewLabel_1 = new JLabel("\u9662(\u7CFB)/\u90E8\uFF1A");
 				lblNewLabel_1.setBounds(30, 10, 99, 15);
@@ -235,12 +236,11 @@ public class StuUI extends JFrame {
 	
 	static public void getInfo(String ID) {
 		String sql = "SELECT * FROM Student";
-		dbManager = new DBManager();
-		connection = dbManager.getConnection();
+		
+		SqlTool sqlTool = new SqlTool();
+		resultSet = sqlTool.queryExecute(sql, null);
+		
 		try {
-			stmt = connection.createStatement();
-			resultSet = stmt.executeQuery(sql);
-
 			while (resultSet.next()) {
 				if (resultSet.getString(1).equals(ID)) {
 					Sdeparment = resultSet.getString(7);
@@ -253,12 +253,9 @@ public class StuUI extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbManager.releaseConnection();
+			sqlTool.close();
 		}
 		
 	}
 	
-	public static void main(String args[]) {
-		new StuUI("201720207");
-	}
 }

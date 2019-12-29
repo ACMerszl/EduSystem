@@ -1,4 +1,4 @@
-package trial;
+package UI;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -6,8 +6,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Frame;
+
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
@@ -15,17 +18,15 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.awt.event.ActionEvent;
-
-public class ForgetPwdUI extends JFrame {
+import DBManager.SqlTool;
+public class ForgetPwdUI extends JDialog implements ActionListener {
 	
-	private static DBManager dbManager;
-	private static Connection connection;
-	private static Statement stmt;
 	private static ResultSet resultSet;
 	private static String ID;
 	private static String pro, proText, proAnswer;
 	private static String pwd, rePwd;
-	public ForgetPwdUI() {
+	public ForgetPwdUI(Frame owner, String title, boolean modal) {
+		super(owner, title, modal);
 		JPanel contentPane;
 		JTextField textField;
 		JPasswordField passwordField;
@@ -89,6 +90,9 @@ public class ForgetPwdUI extends JFrame {
 		getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
+		panel_1.setVisible(false);
+		panel.setVisible(false);
+		
 		JLabel label_1 = new JLabel("\u5BC6\u4FDD\u95EE\u9898\uFF1A");
 		label_1.setBounds(61, 10, 72, 21);
 		panel_1.add(label_1);
@@ -104,30 +108,27 @@ public class ForgetPwdUI extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				boolean flag = false;
-				dbManager = new DBManager(); 
-				connection = dbManager.getConnection();
 				ID = textField.getText();
 				if (ID.length() == 0) 
 					JOptionPane.showMessageDialog(null, "学号不能为空！", "消息",JOptionPane.ERROR_MESSAGE);  
 				else {
-					String sql = "SELECT * FROM InfoStu";
-					//System.out.println(ID + "*");
-		
+					String sql = "SELECT * FROM Student where Sno = ?";
+					String []paras = {ID};
+
+					SqlTool sqlTool = new SqlTool();
+					resultSet = sqlTool.queryExecute(sql, paras);
+					//System.out.println(ID + "*");	
 					try {
-						stmt = connection.createStatement();
 						
-						resultSet = stmt.executeQuery(sql);
-						
-						while (resultSet.next()) {
-							if (ID.equals(resultSet.getString(1)) == true) {
-								
+						if (resultSet.next()) {
+
 								flag = true;
-								System.out.println(resultSet.getString(1) + resultSet.getString(2) + resultSet.getString(3) + resultSet.getString(4));
-								System.out.println(resultSet.getString(4) + "**");
-								pro = resultSet.getString(3);
+								//System.out.println(resultSet.getString(1) + resultSet.getString(2) + resultSet.getString(3) + resultSet.getString(4));
+							//	System.out.println(resultSet.getString(4) + "**");
+								pro = resultSet.getString(9);
 								//System.out.println(Pro + "***");
-								proAnswer = resultSet.getString(4);
-							}
+								proAnswer = resultSet.getString(10);
+							
 							
 						}
 						
@@ -147,7 +148,7 @@ public class ForgetPwdUI extends JFrame {
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					} finally {
-						dbManager.releaseConnection();
+						sqlTool.close();
 					}
 				}
 			}
@@ -183,39 +184,19 @@ public class ForgetPwdUI extends JFrame {
 					}
 				}
 				
-				String sql = "SELECT * FROM InfoStu";
-				dbManager = new DBManager();
-				connection = dbManager.getConnection();
-				
-				try {
-					stmt = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				if (flagOne && flagTwo) {
+					String sql = "update Student set Pwd = ? where Sno = ?"; 
+					String paras[] = {pwd, ID};
+					SqlTool sqlTool = new SqlTool();
+					boolean flag = sqlTool.cudExecute(sql, paras);
 					
-					resultSet = stmt.executeQuery(sql);
-					
-					while (resultSet.next()) {
-
-						//System.out.println(resultSet.getString(1) + resultSet.getString(2) + resultSet.getString(3) + resultSet.getString(4));
-					
-						if (resultSet.getString(1).equals(ID) == true) {
-							
-							//System.out.println("!!!!!");
-							//resultSet.updateString(1, ID);
-							resultSet.updateString(2, pwd);
-							resultSet.updateRow();
-						}
-					}
-					
-					
-					
-					if ((flagOne && flagTwo) == true)
+					if (flag == false) 
+						JOptionPane.showMessageDialog(null, "修改失败", "消息",JOptionPane.ERROR_MESSAGE);
+					else {
 						setVisible(false);
-					//System.out.println("***");
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				} finally {
-					dbManager.releaseConnection();
+						sqlTool.close();
+					}
 				}
-				
 			}
 		});
 		
@@ -224,8 +205,13 @@ public class ForgetPwdUI extends JFrame {
 		panel.add(btnNewButton_1);
 		
 		setVisible(true);
-		panel_1.setVisible(false);
-		panel.setVisible(false);
+		
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 
