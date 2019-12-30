@@ -95,35 +95,35 @@ public class FirstLogin extends JDialog implements ActionListener {
 				rePwd = String.valueOf(passwordField_1.getPassword());
 				textPro = (String)comboBox.getSelectedItem();
 				answer = textField.getText();	
-				if (answer.length() == 0) 
-					JOptionPane.showMessageDialog(null, "答案不能为空", "消息",JOptionPane.ERROR_MESSAGE);
+				if (Pwd.length() == 0) 
+					JOptionPane.showMessageDialog(null, "密码不能为空", "消息",JOptionPane.ERROR_MESSAGE);
 				else {
-					flagTwo = true;
-					if (Pwd.length() == 0) 
-						JOptionPane.showMessageDialog(null, "密码不能为空", "消息",JOptionPane.ERROR_MESSAGE);
-					else {
-						
-						if (check(Pwd, rePwd) == false) {
-							JOptionPane.showMessageDialog(null, "两次输入不一致", "消息",JOptionPane.ERROR_MESSAGE);
-						} else {
+					if (check(Pwd, rePwd) == false) {
+						JOptionPane.showMessageDialog(null, "两次输入不一致", "消息",JOptionPane.ERROR_MESSAGE);
+					} else {
+						if (answer.length() != 0)
+							flagTwo = true;
+						else 
+							JOptionPane.showMessageDialog(null, "密保答案不能为空", "消息",JOptionPane.ERROR_MESSAGE);
+						if (flagTwo) {
 							if (Pwd.equals("123456") == true) 
 								JOptionPane.showMessageDialog(null, "不能使用初始密码123456", "消息",JOptionPane.ERROR_MESSAGE);
 							else 
 								flagOne = true;
-							if(flagOne) {
-								String sql = "update Student set Pwd = ?, ProText = ?, answer = ? where Sno = ?"; 
-								String paras[] = {Pwd, textPro, answer, ID};
-								SqlTool sqlTool = new SqlTool();
-								boolean flag = sqlTool.cudExecute(sql, paras);
-								if (flag == false) 
-									JOptionPane.showMessageDialog(null, "修改失败", "消息",JOptionPane.ERROR_MESSAGE);
-								else {
-									setVisible(false);
-									sqlTool.close();
-								}
-							}
-							
 						}
+						if(flagOne && flagTwo) {
+							String sql = "update Student set Pwd = ?, ProText = ?, answer = ? where Sno = ?"; 
+							String paras[] = {Pwd, textPro, answer, ID};
+							SqlTool sqlTool = new SqlTool();
+							boolean flag = sqlTool.cudExecute(sql, paras);
+							if (flag == false) 
+								JOptionPane.showMessageDialog(null, "修改失败", "消息",JOptionPane.ERROR_MESSAGE);
+							else {
+								setVisible(false);
+								sqlTool.close();
+							}
+						}
+							
 					}
 				}
 			}

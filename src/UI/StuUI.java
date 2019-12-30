@@ -54,7 +54,7 @@ public class StuUI extends JFrame {
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setFont(new Font("宋体", Font.PLAIN, 14));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"2018-2019\u5B66\u5E74", "2017-2018\u5B66\u5E74"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"2018-2019\u5B66\u5E74", "2017-2018\u5B66\u5E74", "\u5165\u5B66\u4EE5\u6765"}));
 		comboBox.setBounds(225, 49, 128, 23);
 		getContentPane().add(comboBox);
 		
@@ -87,6 +87,67 @@ public class StuUI extends JFrame {
 		panel.setBounds(25, 135, 907, 53);
 		getContentPane().add(panel);
 		panel.setLayout(null);
+		
+		JLabel lblNewLabel_1 = new JLabel("\u9662(\u7CFB)/\u90E8\uFF1A");
+		lblNewLabel_1.setBounds(30, 10, 99, 15);
+		panel.add(lblNewLabel_1);
+		lblNewLabel_1.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_2 = new JLabel("\u5B66     \u53F7\uFF1A");
+		lblNewLabel_2.setBounds(30, 35, 99, 15);
+		panel.add(lblNewLabel_2);
+		lblNewLabel_2.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_3 = new JLabel("\u884C\u653F\u73ED\u7EA7\uFF1A");
+		lblNewLabel_3.setBounds(373, 10, 72, 15);
+		panel.add(lblNewLabel_3);
+		lblNewLabel_3.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_4 = new JLabel("\u59D3    \u540D\uFF1A");
+		lblNewLabel_4.setBounds(373, 35, 100, 15);
+		panel.add(lblNewLabel_4);
+		lblNewLabel_4.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_5 = new JLabel("\u5E73\u5747\u5B66\u5206\u7EE9\u70B9\uFF1A");
+		lblNewLabel_5.setBounds(695, 10, 110, 15);
+		panel.add(lblNewLabel_5);
+		lblNewLabel_5.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_6 = new JLabel("\u6253\u5370\u65F6\u95F4\uFF1A");
+		lblNewLabel_6.setBounds(695, 28, 72, 29);
+		panel.add(lblNewLabel_6);
+		lblNewLabel_6.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_12 = new JLabel(date);
+		lblNewLabel_12.setBounds(762, 35, 107, 15);
+		panel.add(lblNewLabel_12);
+		lblNewLabel_12.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_10 = new JLabel(Sname);
+		lblNewLabel_10.setBounds(444, 35, 97, 15);
+		panel.add(lblNewLabel_10);
+		lblNewLabel_10.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_9 = new JLabel(Sclass);
+		lblNewLabel_9.setBounds(444, 10, 97, 15);
+		panel.add(lblNewLabel_9);
+		lblNewLabel_9.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_8 = new JLabel(Sno);
+		lblNewLabel_8.setBounds(103, 35, 128, 15);
+		panel.add(lblNewLabel_8);
+		lblNewLabel_8.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_7 = new JLabel(Sdeparment);
+		lblNewLabel_7.setBounds(103, 10, 128, 15);
+		panel.add(lblNewLabel_7);
+		lblNewLabel_7.setFont(new Font("宋体", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_11 = new JLabel();
+		lblNewLabel_11.setBounds(788, 10, 81, 15);
+		panel.add(lblNewLabel_11);
+		lblNewLabel_11.setFont(new Font("宋体", Font.PLAIN, 14));
+		
 		setVisible(true);
 		
 		JButton button = new JButton("\u68C0\u7D22");
@@ -102,14 +163,22 @@ public class StuUI extends JFrame {
 				columnNames.add("学分绩点");
 				String op = (String)comboBox.getSelectedItem();
 				rowData = new Vector();
-					
-				String sql = "select Score.CidNum, Score.Cname, Cscore, Sscore " + 
-						"from Student, Course, Score " + 
-						"where Student.Sno = Score.Sno and Course.CidNum = Score.CidNum and Score.Sno = ? " +
-						" and Cteachtime = ?";
-				String []paras = {ID, op};
+				String sql;
 				SqlTool sqlTool = new SqlTool();
-				resultSet = sqlTool.queryExecute(sql, paras);
+				if (op.equals("入学以来")) {
+					sql = "select Score.CidNum, Score.Cname, Cscore, Sscore " + 
+							"from Student, Course, Score " + 
+							"where Student.Sno = Score.Sno and Course.CidNum = Score.CidNum and Score.Sno = ? ";
+					String []paras = {ID};
+					resultSet = sqlTool.queryExecute(sql, paras);
+				} else {
+					sql = "select Score.CidNum, Score.Cname, Cscore, Sscore " + 
+							"from Student, Course, Score " + 
+							"where Student.Sno = Score.Sno and Course.CidNum = Score.CidNum and Score.Sno = ? " +
+							" and Cteachtime = ?";
+					String []paras = {ID, op};
+					resultSet = sqlTool.queryExecute(sql, paras);
+				}
 				
 				try {
 					double studyScore = 0, multySum = 0, multy = 0;
@@ -149,75 +218,18 @@ public class StuUI extends JFrame {
 				} finally {
 					sqlTool.close();
 				}
-				JLabel lblNewLabel_1 = new JLabel("\u9662(\u7CFB)/\u90E8\uFF1A");
-				lblNewLabel_1.setBounds(30, 10, 99, 15);
-				panel.add(lblNewLabel_1);
-				lblNewLabel_1.setFont(new Font("宋体", Font.PLAIN, 14));
 				
-				JLabel lblNewLabel_2 = new JLabel("\u5B66     \u53F7\uFF1A");
-				lblNewLabel_2.setBounds(30, 35, 99, 15);
-				panel.add(lblNewLabel_2);
-				lblNewLabel_2.setFont(new Font("宋体", Font.PLAIN, 14));
-				
-				JLabel lblNewLabel_3 = new JLabel("\u884C\u653F\u73ED\u7EA7\uFF1A");
-				lblNewLabel_3.setBounds(373, 10, 72, 15);
-				panel.add(lblNewLabel_3);
-				lblNewLabel_3.setFont(new Font("宋体", Font.PLAIN, 14));
-				
-				JLabel lblNewLabel_4 = new JLabel("\u59D3    \u540D\uFF1A");
-				lblNewLabel_4.setBounds(373, 35, 100, 15);
-				panel.add(lblNewLabel_4);
-				lblNewLabel_4.setFont(new Font("宋体", Font.PLAIN, 14));
-				
-				JLabel lblNewLabel_5 = new JLabel("\u5E73\u5747\u5B66\u5206\u7EE9\u70B9\uFF1A");
-				lblNewLabel_5.setBounds(695, 10, 110, 15);
-				panel.add(lblNewLabel_5);
-				lblNewLabel_5.setFont(new Font("宋体", Font.PLAIN, 14));
-				
-				JLabel lblNewLabel_6 = new JLabel("\u6253\u5370\u65F6\u95F4\uFF1A");
-				lblNewLabel_6.setBounds(695, 28, 72, 29);
-				panel.add(lblNewLabel_6);
-				lblNewLabel_6.setFont(new Font("宋体", Font.PLAIN, 14));
-				
-				JLabel lblNewLabel_12 = new JLabel(date);
-				lblNewLabel_12.setBounds(762, 35, 107, 15);
-				panel.add(lblNewLabel_12);
-				lblNewLabel_12.setFont(new Font("宋体", Font.PLAIN, 14));
-				
-				JLabel lblNewLabel_10 = new JLabel(Sname);
-				lblNewLabel_10.setBounds(444, 35, 97, 15);
-				panel.add(lblNewLabel_10);
-				lblNewLabel_10.setFont(new Font("宋体", Font.PLAIN, 14));
-				
-				JLabel lblNewLabel_9 = new JLabel(Sclass);
-				lblNewLabel_9.setBounds(444, 10, 97, 15);
-				panel.add(lblNewLabel_9);
-				lblNewLabel_9.setFont(new Font("宋体", Font.PLAIN, 14));
-				
-				JLabel lblNewLabel_8 = new JLabel(Sno);
-				lblNewLabel_8.setBounds(103, 35, 128, 15);
-				panel.add(lblNewLabel_8);
-				lblNewLabel_8.setFont(new Font("宋体", Font.PLAIN, 14));
-				
-				JLabel lblNewLabel_7 = new JLabel(Sdeparment);
-				lblNewLabel_7.setBounds(103, 10, 128, 15);
-				panel.add(lblNewLabel_7);
-				lblNewLabel_7.setFont(new Font("宋体", Font.PLAIN, 14));
-				
-				JLabel lblNewLabel_11 = new JLabel(Saverage);
-				lblNewLabel_11.setBounds(788, 10, 81, 15);
-				panel.add(lblNewLabel_11);
-				lblNewLabel_11.setFont(new Font("宋体", Font.PLAIN, 14));
+				lblNewLabel_11.setText(Saverage);
 				
 				panel.setVisible(true);
-			        model = new DefaultTableModel(rowData, columnNames);//设置模型
-			        table = new JTable(model);//引用模型，或table.setModel(model);
+			    model = new DefaultTableModel(rowData, columnNames);//设置模型
+			    table = new JTable(model);//引用模型，或table.setModel(model);
 
 //			        getContentPane().add(sc, BorderLayout.CENTER);
 			        //table.setRowHeight(30);
 				JScrollPane scrollPane = new JScrollPane(table);
 				scrollPane.setBounds(47, 196, 891, 344);
-				getContentPane().add(scrollPane, BorderLayout.CENTER);
+				getContentPane().add(scrollPane);
 			}
 		});
 		
@@ -232,6 +244,9 @@ public class StuUI extends JFrame {
 		getContentPane().add(button);
 	}
 	
+//	public static void main(String args[]) {
+//		new StuUI("201720207");
+//	}
 	private JPanel contentPane;
 	
 	static public void getInfo(String ID) {

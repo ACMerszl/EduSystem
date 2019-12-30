@@ -24,6 +24,7 @@ public class AdminStuInfoUI extends JFrame implements ActionListener {
 	private static ResultSet resultSet;
 	private InfoModel model;
 	private JTable table;// 表格
+	private JComboBox comboBox;
 
 	public AdminStuInfoUI() {
 		setSize(1000, 600); // 窗体大小
@@ -33,19 +34,19 @@ public class AdminStuInfoUI extends JFrame implements ActionListener {
 		JButton btnNewButton = new JButton("\u589E\u52A0");
 		btnNewButton.addActionListener(this);
 		btnNewButton.setActionCommand("add");
-		btnNewButton.setBounds(10, 154, 111, 46);
+		btnNewButton.setBounds(10, 184, 111, 46);
 		btnNewButton.setFont(new Font("宋体", Font.PLAIN, 14));
 		getContentPane().add(btnNewButton);
 
 		JButton btnNewButton_1 = new JButton("\u5220\u9664");
-		btnNewButton_1.setBounds(10, 248, 111, 46);
+		btnNewButton_1.setBounds(10, 316, 111, 46);
 		btnNewButton_1.addActionListener(this);
 		btnNewButton_1.setActionCommand("del");
 		btnNewButton_1.setFont(new Font("宋体", Font.PLAIN, 14));
 		getContentPane().add(btnNewButton_1);
 
 		JButton btnNewButton_2 = new JButton("\u4FEE\u6539");
-		btnNewButton_2.setBounds(10, 357, 111, 46);
+		btnNewButton_2.setBounds(10, 437, 111, 46);
 		btnNewButton_2.addActionListener(this);
 		btnNewButton_2.setActionCommand("updata");
 		btnNewButton_2.setFont(new Font("宋体", Font.PLAIN, 14));
@@ -80,21 +81,25 @@ public class AdminStuInfoUI extends JFrame implements ActionListener {
 		btnNewButton_3.setFont(new Font("宋体", Font.PLAIN, 14));
 		btnNewButton_3.addActionListener(this);
 		btnNewButton_3.setActionCommand("select");
-		btnNewButton_3.setBounds(10, 465, 111, 25);
+		btnNewButton_3.setBounds(663, 31, 111, 25);
 		getContentPane().add(btnNewButton_3);
-		
-		JLabel lblNewLabel = new JLabel("\u5B66\u751F\u4FE1\u606F\u7BA1\u7406");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("宋体", Font.PLAIN, 30));
-		lblNewLabel.setBounds(326, 10, 412, 62);
-		getContentPane().add(lblNewLabel);
 		
 		JButton btnNewButton_4 = new JButton("\u5168\u90E8\u663E\u793A");
 		btnNewButton_4.setFont(new Font("宋体", Font.PLAIN, 14));
 		btnNewButton_4.addActionListener(this);
 		btnNewButton_4.setActionCommand("selectAll");
-		btnNewButton_4.setBounds(10, 502, 111, 25);
+		btnNewButton_4.setBounds(810, 31, 111, 25);
 		getContentPane().add(btnNewButton_4);
+		
+		comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"\u6309\u5B66\u53F7\u67E5\u8BE2", "\u6309\u73ED\u7EA7\u67E5\u8BE2", "\u6309\u4E13\u4E1A\u67E5\u8BE2", "\u6309\u9662\u7CFB\u67E5\u8BE2"}));
+		comboBox.setBounds(247, 32, 121, 23);
+		getContentPane().add(comboBox);
+		
+		textField = new JTextField();
+		textField.setBounds(413, 33, 156, 21);
+		getContentPane().add(textField);
+		textField.setColumns(10);
 
 		scrollPane.setVisible(true);
 
@@ -102,6 +107,7 @@ public class AdminStuInfoUI extends JFrame implements ActionListener {
 	}
 
 	private JPanel contentPane;
+	private JTextField textField;
 
 //	public static void main(String[] args) {
 //		new AdminStuInfoUI();
@@ -145,12 +151,23 @@ public class AdminStuInfoUI extends JFrame implements ActionListener {
 			new AdminUI();
 			setVisible(false);
 		} else if (e.getActionCommand().equals("select")) {
-			AdminInfoSelect adminInfoselect = new AdminInfoSelect(this, "By-szl", true);
-			String sql = adminInfoselect.getSql();
-			String key = adminInfoselect.getKey();
-			String []paras = {key};
-//			System.out.println(sql + "*" + key);
+			String op = (String)comboBox.getSelectedItem();
+			String sql = null;
+			String key = textField.getText();
+			if (key.length() != 0) {
+				if (op.equals("按学号查询")) {
+					sql = "select * from Student where Sno = ?";
+				} else if (op.equals("按班级查询")) {
+					sql = "select * from Student where Sclass = ?";
+				} else if (op.equals("按专业查询")) {
+					sql = "select * from Student where Smajor = ?";
+				} else {
+					sql = "select * from Student where Sdeparment = ?";
+				}
+			} else JOptionPane.showMessageDialog(null, "不能为空！", "消息",JOptionPane.WARNING_MESSAGE); 
+			
 			if (sql.length() != 0 && key.length() != 0) {
+				String []paras = {key};
 				jtableUpdate(sql, paras);
 			}
 		}
