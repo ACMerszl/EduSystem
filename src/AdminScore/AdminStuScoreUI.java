@@ -23,8 +23,10 @@ public class AdminStuScoreUI extends JFrame implements ActionListener {
 	private ScoreModel model;
 	private JTable table;// 表格
 	private JTextField textField;
-
+	private JComboBox comboBox;
+	
 	public AdminStuScoreUI() {
+		setTitle("By-szl");
 		setSize(1000, 600); // 窗体大小
 		setLocation(300, 100);
 		getContentPane().setLayout(null);
@@ -77,11 +79,6 @@ public class AdminStuScoreUI extends JFrame implements ActionListener {
 		btnNewButton_4.setBounds(10, 10, 140, 62);
 		getContentPane().add(btnNewButton_4);
 		
-		JLabel lblNewLabel = new JLabel("\u8BF7\u8F93\u5165\u5B66\u53F7\uFF1A");
-		lblNewLabel.setFont(new Font("宋体", Font.PLAIN, 14));
-		lblNewLabel.setBounds(247, 30, 105, 26);
-		getContentPane().add(lblNewLabel);
-		
 		textField = new JTextField();
 		textField.setFont(new Font("宋体", Font.PLAIN, 14));
 		textField.setBounds(351, 33, 141, 21);
@@ -101,6 +98,12 @@ public class AdminStuScoreUI extends JFrame implements ActionListener {
 		btnNewButton_7.setActionCommand("selectAll");
 		btnNewButton_7.setBounds(705, 30, 166, 26);
 		getContentPane().add(btnNewButton_7);
+		
+		comboBox = new JComboBox();
+		comboBox.setFont(new Font("宋体", Font.PLAIN, 14));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"\u6309\u5B66\u53F7\u67E5\u8BE2", "\u6309\u8BFE\u7A0B\u53F7\u67E5\u8BE2"}));
+		comboBox.setBounds(214, 32, 112, 23);
+		getContentPane().add(comboBox);
 		
 		scrollPane.setVisible(true);
 		
@@ -147,16 +150,20 @@ public class AdminStuScoreUI extends JFrame implements ActionListener {
 			String sql = "select * from Score";
 			jtableUpdate(sql, null);
 		} else if (e.getActionCommand().equals("select")) {
+			String op = (String)comboBox.getSelectedItem();
 			String name = textField.getText().trim();
+			String sql = null;
 			if (name.length() != 0) {
 				// ========姓名输入有效时，执行查询
 				// ......定义参数
-				String sql = "select * from Score where Sno = ?";
+				if (op.equals("按学号查询")) {
+					sql = "select * from Score where Sno = ?";
+				} else sql = "select * from Score Where CidNum = ?";
 				String[] paras = {name};
 				// ......更新模型
 				jtableUpdate(sql, paras);
 			} else {		
-				JOptionPane.showMessageDialog(null, "学号不能为空！", "消息",JOptionPane.WARNING_MESSAGE); 
+				JOptionPane.showMessageDialog(null, "不能为空！", "消息",JOptionPane.WARNING_MESSAGE); 
 			}
 		} else if (e.getActionCommand().equals("selectAll")) {
 			String sql = "select * from Score"; 
